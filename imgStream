@@ -1,0 +1,24 @@
+// npm install --save jimp
+// import jimp library to the environment
+var Jimp = require('jimp');
+const http = require('http')
+const fs = require('fs')
+
+// User-Defined Function to read the images
+async function main() {
+    const image = await Jimp.read('photo-1631086459990-06bc4d7ad6cf.jfif');
+    // flip function using callback function
+    image.flip(true, true, function(err){
+        if (err) throw err;
+    })
+    .write('img.jfif');
+}
+
+main().then(()=>{
+    //console.log('输出',result);
+    const server = http.createServer((req, res) => {
+        const stream = fs.createReadStream(__dirname + '/img.jfif')
+        stream.pipe(res)
+    })
+    server.listen(3000)
+});
